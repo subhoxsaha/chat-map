@@ -1,14 +1,18 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { connectDB } from "@/lib/mongodb";
-import User from "@/models/User";
 import { NextResponse } from "next/server";
+
+export const dynamic = "force-dynamic";
 
 // GET /api/profile  — return current user's profile
 export async function GET() {
   try {
     const session = await getServerSession(authOptions);
     if (!session?.user?.id) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    
+    const { connectDB } = await import("@/lib/mongodb");
+    const { default: User } = await import("@/models/User");
+    
     await connectDB();
     let user = await User.findOne({ googleId: session.user.id }).lean();
     if (!user) {
@@ -27,9 +31,14 @@ export async function PATCH(req) {
     const session = await getServerSession(authOptions);
     if (!session?.user?.id) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     const { displayName, customAvatar } = await req.json();
+    
+    const { connectDB } = await import("@/lib/mongodb");
+    const { default: User } = await import("@/models/User");
+    
     const update = {};
     if (displayName !== undefined) update.displayName = displayName.trim().slice(0, 40);
     if (customAvatar !== undefined) update.customAvatar = customAvatar;
+    
     await connectDB();
     const user = await User.findOneAndUpdate(
       { googleId: session.user.id },

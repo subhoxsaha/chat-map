@@ -1,5 +1,3 @@
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
 import { NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
@@ -7,6 +5,9 @@ export const dynamic = "force-dynamic";
 // GET /api/profile  — return current user's profile
 export async function GET() {
   try {
+    const { getServerSession } = await import("next-auth/next");
+    const { authOptions } = await import("@/lib/auth");
+    
     const session = await getServerSession(authOptions);
     if (!session?.user?.id) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     
@@ -28,6 +29,9 @@ export async function GET() {
 // PATCH /api/profile  — update displayName and/or customAvatar
 export async function PATCH(req) {
   try {
+    const { getServerSession } = await import("next-auth/next");
+    const { authOptions } = await import("@/lib/auth");
+    
     const session = await getServerSession(authOptions);
     if (!session?.user?.id) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     const { displayName, customAvatar } = await req.json();

@@ -1,6 +1,4 @@
 import GoogleProvider from "next-auth/providers/google";
-import { connectDB } from "./mongodb";
-import User from "@/models/User";
 
 export const authOptions = {
   providers: [
@@ -15,18 +13,18 @@ export const authOptions = {
         session.user.id = token.sub;
         
         try {
+          const { connectDB } = await import("./mongodb");
+          const { default: User } = await import("@/models/User");
+          
           await connectDB();
           const dbUser = await User.findOne({ googleId: token.sub }).lean();
           if (dbUser) {
-            // AUTHORITATIVE DB OVERRIDE: 
-            // Ensures Name and PFP are consistent across all server/client components instantly
             session.user.name = dbUser.displayName || dbUser.name || session.user.name;
             session.user.customAvatar = dbUser.customAvatar || null;
-            // Never send the Google image to the client if we want full DB authority
             session.user.image = dbUser.customAvatar || null;
           }
         } catch (err) {
-          console.error("NextAuth session callback DB error:", err);
+          console.error("NextAuth session callback error:", err);
         }
       }
       return session;

@@ -41,7 +41,7 @@ export async function PATCH(req) {
           image: session.user.image || "" 
         } 
       },
-      { new: true, upsert: true }
+      { upsert: true, returnDocument: 'after' }
     ).lean();
 
     // Denormalization: Update senderName/senderImage on all existing messages

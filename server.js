@@ -120,7 +120,7 @@ app.prepare().then(async () => {
               customAvatar: randomDicebear(userData.id),
             }
           },
-          { upsert: true, new: true }
+          { upsert: true, returnDocument: 'after' }
         ).lean();
 
         if (dbUser) {
@@ -188,7 +188,7 @@ app.prepare().then(async () => {
               const newRoom = await ChatRoom.findOneAndUpdate(
                 { roomId },
                 { roomId, participants: [userData.id, otherId], lastActivity: new Date() },
-                { upsert: true, new: true }
+                { upsert: true, returnDocument: 'after' }
               ).lean();
               rooms.push(newRoom);
             }

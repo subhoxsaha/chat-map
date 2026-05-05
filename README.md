@@ -1,9 +1,6 @@
 # 📍 MapChat — Real-Time Proximity Web Platform
 
 **MapChat** is a professional, high-performance real-time messaging web application where your location is your identity. Discover, chat, and connect with users around the world on a live interactive map.
-
-![MapChat Preview](https://via.placeholder.com/1200x600/0d1d1b/ffffff?text=MapChat+Interactive+Overlay)
-
 ---
 
 ## 🌟 The Experience
